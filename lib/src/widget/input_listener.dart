@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-// copy form xterm.dart
+// copy from xterm.dart
 typedef KeyStrokeHandler = void Function(RawKeyEvent);
 typedef InputHandler = TextEditingValue? Function(TextEditingValue);
 typedef ActionHandler = void Function(TextInputAction);
@@ -188,6 +188,7 @@ class TerminalTextInputClient implements TextInputClient {
   final ActionHandler onAction;
   TextEditingValue? _savedValue;
 
+  // Getters obrigatórios
   @override
   TextEditingValue get currentTextEditingValue =>
       _savedValue ?? const TextEditingValue();  // :contentReference[oaicite:4]{index=4}
@@ -195,6 +196,7 @@ class TerminalTextInputClient implements TextInputClient {
   @override
   AutofillScope? get currentAutofillScope => null;           // :contentReference[oaicite:5]{index=5}
 
+  // Atualizações de edição e ações
   @override
   void updateEditingValue(TextEditingValue value) {         // :contentReference[oaicite:6]{index=6}
     onInput(value);
@@ -206,36 +208,38 @@ class TerminalTextInputClient implements TextInputClient {
     onAction(action);
   }
 
+  // Cursor flutuante e autocorreção
   @override
-  void updateFloatingCursor(RawFloatingCursorPoint point) { // :contentReference[oaicite:8]{index=8}
-    // opcional
-  }
+  void updateFloatingCursor(RawFloatingCursorPoint point) {} // :contentReference[oaicite:8]{index=8}
 
   @override
-  void showAutocorrectionPromptRect(int start, int end) {   // :contentReference[oaicite:9]{index=9}
-    // opcional
-  }
+  void showAutocorrectionPromptRect(int start, int end) {}   // :contentReference[oaicite:9]{index=9}
 
   @override
-  void connectionClosed() {                                 // :contentReference[oaicite:10]{index=10}
-    // opcional
-  }
+  void connectionClosed() {}                                 // :contentReference[oaicite:10]{index=10}
 
   @override
-  void performPrivateCommand(String action, Map<String, dynamic> data) { // :contentReference[oaicite:11]{index=11}
-    // opcional
-  }
+  void performPrivateCommand(String action, Map<String, dynamic> data) {} // :contentReference[oaicite:11]{index=11}
 
   @override
-  void insertContent(KeyboardInsertedContent content) {     // :contentReference[oaicite:12]{index=12}
-    // opcional
-  }
+  void insertContent(KeyboardInsertedContent content) {}     // :contentReference[oaicite:12]{index=12}
+
+  // Novas implementações obrigatórias:
+  @override
+  void insertTextPlaceholder(Size size) {}                   // :contentReference[oaicite:13]{index=13}
 
   @override
-  void didChangeInputControl(                            // :contentReference[oaicite:13]{index=13}
+  void removeTextPlaceholder() {}                            // :contentReference[oaicite:14]{index=14}
+
+  @override
+  void performSelector(String selectorName) {}               // :contentReference[oaicite:15]{index=15}
+
+  @override
+  void showToolbar() {}                                      // :contentReference[oaicite:16]{index=16}
+
+  @override
+  void didChangeInputControl(
     TextInputControl? oldControl,
     TextInputControl? newControl,
-  ) {
-    // opcional
-  }
+  ) {}                                                       // :contentReference[oaicite:17]{index=17}
 }
