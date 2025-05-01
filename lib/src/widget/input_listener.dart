@@ -65,7 +65,6 @@ class InputListenerState extends State<InputListener>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (!_didAutoFocus && widget.autofocus) {
       _didAutoFocus = true;
       SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -77,20 +76,17 @@ class InputListenerState extends State<InputListener>
   }
 
   bool get _shouldCreateInputConnection => kIsWeb || !widget.readOnly;
-
   bool get _hasInputConnection => _conn != null && _conn!.attached;
 
   @override
   void didUpdateWidget(InputListener oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.focusNode != oldWidget.focusNode) {
       oldWidget.focusNode.removeListener(onFocusChange);
       _focusAttachment?.detach();
       _focusAttachment = widget.focusNode.attach(context);
       widget.focusNode.addListener(onFocusChange);
     }
-
     if (!_shouldCreateInputConnection) {
       closeInputConnectionIfNeeded();
     } else {
@@ -102,14 +98,13 @@ class InputListenerState extends State<InputListener>
 
   @override
   void dispose() {
-    super.dispose();
     _focusAttachment!.detach();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     _focusAttachment!.reparent();
-
     if (widget.listenKeyStroke) {
       return RawKeyboardListener(
         focusNode: widget.focusNode,
@@ -118,7 +113,6 @@ class InputListenerState extends State<InputListener>
         child: widget.child,
       );
     }
-
     return Focus(
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
@@ -137,10 +131,7 @@ class InputListenerState extends State<InputListener>
   }
 
   void onFocusChange() {
-    if (widget.onFocus != null) {
-      widget.onFocus!(widget.focusNode.hasFocus);
-    }
-
+    if (widget.onFocus != null) widget.onFocus!(widget.focusNode.hasFocus);
     openOrCloseInputConnectionIfNeeded();
   }
 
@@ -153,26 +144,18 @@ class InputListenerState extends State<InputListener>
   }
 
   void openInputConnection() {
-    if (!_shouldCreateInputConnection) {
-      return;
-    }
-
+    if (!_shouldCreateInputConnection) return;
     if (_hasInputConnection) {
       _conn!.show();
     } else {
-      const TextInputConfiguration config = TextInputConfiguration();
+      const config = TextInputConfiguration();
       final client = TerminalTextInputClient(onInput, onAction);
       _conn = TextInput.attach(client, config);
-
       _conn!.show();
-
-      const double dx = 0.0;
-      const double dy = 0.0;
       _conn!.setEditableSizeAndTransform(
         const Size(10, 10),
-        Matrix4.translationValues(dx, dy, 0.0),
+        Matrix4.translationValues(0, 0, 0),
       );
-
       _conn!.setEditingState(widget.initEditingState);
     }
   }
@@ -186,10 +169,7 @@ class InputListenerState extends State<InputListener>
 
   void onInput(TextEditingValue value) {
     final newValue = widget.onTextInput(value);
-
-    if (newValue != null) {
-      _conn?.setEditingState(newValue);
-    }
+    if (newValue != null) _conn?.setEditingState(newValue);
   }
 
   void onAction(TextInputAction action) {
@@ -197,64 +177,65 @@ class InputListenerState extends State<InputListener>
   }
 }
 
-class TerminalTextInputClient extends TextInputClient {
-  TerminalTextInputClient(this.onInput, this.onAction);
+/// Cliente personalizado de entrada de texto
+class TerminalTextInputClient implements TextInputClient {
+  TerminalTextInputClient(
+    this.onInput,
+    this.onAction,
+  );
 
   final void Function(TextEditingValue) onInput;
   final ActionHandler onAction;
-
   TextEditingValue? _savedValue;
 
   @override
-  TextEditingValue? get currentTextEditingValue {
-    return _savedValue;
-  }
+  TextEditingValue get currentTextEditingValue =>
+      _savedValue ?? const TextEditingValue();  // :contentReference[oaicite:4]{index=4}
 
   @override
-  AutofillScope? get currentAutofillScope {
-    return null;
-  }
+  AutofillScope? get currentAutofillScope => null;           // :contentReference[oaicite:5]{index=5}
 
   @override
-  void updateEditingValue(TextEditingValue value) {
-    // print('updateEditingValue $value');
-
+  void updateEditingValue(TextEditingValue value) {         // :contentReference[oaicite:6]{index=6}
     onInput(value);
-
-    // if (_savedValue == null || _savedValue.text == '') {
-    //   onInput(value.text);
-    // } else if (_savedValue.text.length < value.text.length) {
-    //   final diff = value.text.substring(_savedValue.text.length);
-    //   onInput(diff);
-    // }
-
     _savedValue = value;
-    // print('updateEditingValue $value');
   }
 
   @override
-  void performAction(TextInputAction action) {
-    // print('performAction $action');
+  void performAction(TextInputAction action) {              // :contentReference[oaicite:7]{index=7}
     onAction(action);
   }
 
   @override
-  void updateFloatingCursor(RawFloatingCursorPoint point) {
-    // print('updateFloatingCursor');
+  void updateFloatingCursor(RawFloatingCursorPoint point) { // :contentReference[oaicite:8]{index=8}
+    // opcional
   }
 
   @override
-  void showAutocorrectionPromptRect(int start, int end) {
-    // print('showAutocorrectionPromptRect');
+  void showAutocorrectionPromptRect(int start, int end) {   // :contentReference[oaicite:9]{index=9}
+    // opcional
   }
 
   @override
-  void connectionClosed() {
-    // print('connectionClosed');
+  void connectionClosed() {                                 // :contentReference[oaicite:10]{index=10}
+    // opcional
   }
 
   @override
-  void performPrivateCommand(String action, Map<String, dynamic> data) {
-    // print('performPrivateCommand $action');
+  void performPrivateCommand(String action, Map<String, dynamic> data) { // :contentReference[oaicite:11]{index=11}
+    // opcional
+  }
+
+  @override
+  void insertContent(KeyboardInsertedContent content) {     // :contentReference[oaicite:12]{index=12}
+    // opcional
+  }
+
+  @override
+  void didChangeInputControl(                            // :contentReference[oaicite:13]{index=13}
+    TextInputControl? oldControl,
+    TextInputControl? newControl,
+  ) {
+    // opcional
   }
 }
